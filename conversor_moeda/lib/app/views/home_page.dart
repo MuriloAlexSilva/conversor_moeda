@@ -1,3 +1,5 @@
+import 'package:conversor_moeda/app/components/text_field_custom.dart';
+
 import 'package:conversor_moeda/main.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +9,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController _realController = TextEditingController();
+  TextEditingController _dolarController = TextEditingController();
+  TextEditingController _euroController = TextEditingController();
+
   double dolar;
   double euro;
+
+  void realChanged(String text) {
+    if (text.isEmpty) {
+      clearAll();
+      return;
+    } else {
+      double real = double.tryParse(text);
+      _dolarController.text = (real / dolar).toStringAsFixed(2);
+      _euroController.text = (real / euro).toStringAsFixed(2);
+    }
+  }
+
+  void dolarChanged(String text) {
+    if (text.isEmpty) {
+      clearAll();
+      return;
+    } else {
+      double dolar = double.tryParse(text);
+      _realController.text = (dolar * this.dolar)
+          .toStringAsFixed(2); //Neste caso o this.dolar seria o dolar do data
+      _euroController.text = ((dolar * this.dolar) / euro).toStringAsFixed(2);
+    }
+  }
+
+  void euroChanged(String text) {
+    if (text.isEmpty) {
+      clearAll();
+      return;
+    } else {
+      double euro = double.tryParse(text);
+      _realController.text = (euro * this.euro)
+          .toStringAsFixed(2); //Neste caso o this.euro seria o euro do data
+      _dolarController.text = ((euro * this.euro) / euro).toStringAsFixed(2);
+    }
+  }
+
+  void clearAll() {
+    _realController.text = "";
+    _dolarController.text = "";
+    _euroController.text = "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +66,7 @@ class _HomePageState extends State<HomePage> {
       ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.yellow[100],
         appBar: AppBar(
           backgroundColor: Colors.yellow[600],
           title: Text('Conversor de Moedas'),
@@ -40,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(12.0),
                         child: Text(
                           'Carregando os dados',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                         ),
                       )
                     ],
@@ -59,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
                             'Erro ao realizar o download dos dados. :(',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.black),
                           ),
                         )
                       ],
@@ -79,45 +127,12 @@ class _HomePageState extends State<HomePage> {
                           size: 140,
                           color: Colors.amber,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            style: TextStyle(color: Colors.amber),
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(color: Colors.amber),
-                              prefixText: "R\$ ",
-                              labelText: "Reais",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            style: TextStyle(color: Colors.amber),
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(color: Colors.amber),
-                              prefixText: "US\$ ",
-                              labelText: "Dolares",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            style: TextStyle(color: Colors.amber),
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(color: Colors.amber),
-                              prefixText: "€ ",
-                              labelText: "Euros",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
+                        textFieldCustom(
+                            "R\$ ", "Reais", _realController, realChanged),
+                        textFieldCustom(
+                            "US\$ ", "Dolares", _dolarController, dolarChanged),
+                        textFieldCustom(
+                            "€ ", "Euros", _euroController, euroChanged),
                       ],
                     ),
                   );
