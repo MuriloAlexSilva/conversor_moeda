@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       double euro = double.tryParse(text);
       _realController.text = (euro * this.euro)
           .toStringAsFixed(2); //Neste caso o this.euro seria o euro do data
-      _dolarController.text = ((euro * this.euro) / euro).toStringAsFixed(2);
+      _dolarController.text = ((euro * this.euro) / dolar).toStringAsFixed(2);
     }
   }
 
